@@ -1,16 +1,17 @@
 # S3 bucket core module
 
-This module enforces some of the PlatSec S3 bucket policy. As the bucket and kms key policies are provided, the user of
+This module enforces some of the PlatSec S3 bucket policy. As the bucket and kms key policies need to be provided, the user of
 this module will be responsible for ensuring the bucket created with this module complies with the policy.
 
-There is a "standard" bucket module that will comply with the policy while also requiring that no S3 permissions need
-to be managed.
+There is a [standard bucket module](https://github.com/hmrc/terraform-aws-s3-bucket-standard) that will comply with the
+policy while also requiring that no S3 permissions need to be managed.
 
 
 ## Policy enforcement
 
 #### Logging
-**S3 Server Access logging is enabled.** The target bucket must be supplied with variable `log_bucket_id`
+**S3 server access logging is enabled.** The target bucket must be supplied with variable `log_bucket_id`. The logs for
+this bucket will be stored with the prefix <account_id>/<bucket_name>
 
 #### Bucket policy
 
@@ -46,7 +47,7 @@ and a lifecycle rule added to ensure data expires after the appropriate number o
 | 7-years    | 2557 days  |
 | 10-years   | 3653 days  |
 
-#### Encryption at rest
+#### Encryption at rest, Key management service
 
 The bucket will be encrypted with a KMS key created by this module, but the KMS policy must be supplied with the
 `kms_key_policy` variable (sting of JSON).
@@ -58,7 +59,7 @@ The bucket will be encrypted with a KMS key created by this module, but the KMS 
 Bucket ownership controls are set to `BucketOwnerEnforced` which means that bucket ACLs have no effect (equivalent to
 the default "private")
 
-### Tests
+## Tests
 
 ### How to use / run tests
 In order to integrate with AWS, we need to provide the relevant credentials.
