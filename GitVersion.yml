@@ -4,3 +4,4 @@ ignore:
   sha: []
 merge-message-formats: {}
 next-version: 0.1.0
+increment: Minor # temporary - Remove or set to Patch when version 1.0.0 reached
