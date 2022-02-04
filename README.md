@@ -9,7 +9,9 @@ comply with the policy while also requiring that no S3 permissions need to be ma
 
 ## Policy enforcement
 
+
 ### Logging
+
 **S3 server access logging is enabled.** The target bucket must be supplied with variable `log_bucket_id`. The logs for
 this bucket will be stored with the prefix <account_id>/<bucket_name>
 
@@ -59,7 +61,7 @@ The bucket will be encrypted with a KMS key created by this module, but the KMS 
 Bucket ownership controls are set to `BucketOwnerEnforced` which means that bucket ACLs have no effect (equivalent to
 the default "private")
 
-### Tests
+## Tests
 
 ### How to use / run tests
 In order to integrate with AWS, we need to provide the relevant credentials.
