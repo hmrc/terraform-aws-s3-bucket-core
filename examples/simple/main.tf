@@ -16,7 +16,7 @@ locals {
 }
 
 module "bucket" {
-  #source      = "hashicorp/hmrc/s3-bucket-core"
+  #source      = "hmrc/s3-bucket-core/aws"
   source      = "../../"
   bucket_name = local.bucket_name
 

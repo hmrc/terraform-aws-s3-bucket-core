@@ -26,7 +26,7 @@ locals {
 
 }
 
-resource "aws_s3_bucket" "s3_bucket" {
+resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
   acl    = "private"
 
@@ -76,16 +76,16 @@ resource "aws_s3_bucket" "s3_bucket" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "example" {
-  bucket = aws_s3_bucket.s3_bucket.id
+resource "aws_s3_bucket_ownership_controls" "bucket_owner_enforced" {
+  bucket = aws_s3_bucket.bucket.id
 
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "public_access_block" {
-  bucket                  = aws_s3_bucket.s3_bucket.id
+resource "aws_s3_bucket_public_access_block" "public_blocked" {
+  bucket                  = aws_s3_bucket.bucket.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
