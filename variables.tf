@@ -22,8 +22,7 @@ variable "force_destroy" {
 
 variable "data_sensitivity" {
   type        = string
-  description = "Defaults to low. For buckets with PII or other sensitive data, the tag data_sensitivity: high must be applied."
-  default     = "low"
+  description = "For buckets with PII or other sensitive data, the tag data_sensitivity: high must be applied."
 
   validation {
     condition     = var.data_sensitivity == "high" || var.data_sensitivity == "low"
