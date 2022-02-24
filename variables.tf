@@ -23,7 +23,6 @@ variable "force_destroy" {
 variable "data_sensitivity" {
   type        = string
   description = "Defaults to low. For buckets with PII or other sensitive data, the tag data_sensitivity: high must be applied."
-  default     = "low"
 
   validation {
     condition     = var.data_sensitivity == "high" || var.data_sensitivity == "low"
@@ -38,11 +37,11 @@ variable "log_bucket_id" {
 
 variable "data_expiry" {
   type        = string
-  description = "1-day, 1-week, 1-month, 90-days, 6-months, 1-year, 7-years or 10-years"
+  description = "1-day, 1-week, 1-month, 90-days, 6-months, 1-year, 7-years, 10-years, forever-config-only"
 
   validation {
-    condition     = var.data_expiry == "1-day" || var.data_expiry == "1-week" || var.data_expiry == "1-month" || var.data_expiry == "90-days" || var.data_expiry == "6-months" || var.data_expiry == "1-year" || var.data_expiry == "7-years" || var.data_expiry == "10-years"
-    error_message = "The data_expiry value must be \"1-day\", \"1-week\", \"1-month\", \"90-days\", \"6-months\", \"1-year\", \"7-years\" or \"10-years\"."
+    condition     = var.data_expiry == "1-day" || var.data_expiry == "1-week" || var.data_expiry == "1-month" || var.data_expiry == "90-days" || var.data_expiry == "6-months" || var.data_expiry == "1-year" || var.data_expiry == "7-years" || var.data_expiry == "10-years" || var.data_expiry == "forever-config-only"
+    error_message = "The data_expiry value must be \"1-day\", \"1-week\", \"1-month\", \"90-days\", \"6-months\", \"1-year\", \"7-years\", \"10-years\" or \"forever-config-only\"."
   }
 }
 

@@ -3,6 +3,10 @@ package test
 import (
 	"context"
 	"fmt"
+	"log"
+	"strings"
+	"testing"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -13,9 +17,6 @@ import (
 	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"log"
-	"strings"
-	"testing"
 )
 
 const region = "eu-west-2"
@@ -66,6 +67,36 @@ func TestDataExpiryPeriods(t *testing.T) {
 			assert.Equal(t, d.dataExpiry, *dataExpiryTagValue)
 		})
 	}
+}
+
+func TestDataNoExpiryPeriod(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	tfVars := map[string]interface{}{
+		"data_expiry": "forever-config-only",
+	}
+	terraformOptions := copyTerraformAndReturnOptions(t, "examples/simple", tfVars)
+	defer terraform.Destroy(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+
+	bucketName := terraform.Output(t, terraformOptions, "bucket_name")
+	client := s3.NewFromConfig(CreateConfig(t, ctx))
+	lcc, err := client.GetBucketLifecycleConfiguration(ctx, &s3.GetBucketLifecycleConfigurationInput{
+		Bucket: &bucketName,
+	})
+	require.NoError(t, err)
+	expiryRule := getLifecycleRuleById(lcc.Rules, "Expiration days")
+	require.NotNil(t, expiryRule)
+
+	assert.Nil(t, expiryRule.Expiration)
+	tagOut, err := client.GetBucketTagging(ctx, &s3.GetBucketTaggingInput{
+		Bucket: &bucketName,
+	})
+	require.NoError(t, err)
+	dataExpiryTagValue := getTagValueByName(tagOut.TagSet, "data_expiry")
+	require.NotNil(t, dataExpiryTagValue)
+	assert.Equal(t, "forever-config-only", *dataExpiryTagValue)
 }
 
 func getLifecycleRuleById(rules []types.LifecycleRule, id string) *types.LifecycleRule {

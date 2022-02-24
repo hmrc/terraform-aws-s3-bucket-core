@@ -6,9 +6,7 @@ the user of this module will be responsible for ensuring the bucket created with
 There is a [standard bucket module](https://registry.terraform.io/modules/hmrc/s3-bucket-standard/aws/latest) that will
 comply with the policy while also requiring that no S3 permissions need to be managed.
 
-
 ## Policy enforcement
-
 
 ### Logging
 
@@ -36,7 +34,8 @@ the variable `versioning_enabled` which defaults to `true`.
 ### Life cycle policies
 
 One of the following data_expiry values must be chosen. The bucket tag `data_expiry` will be set to the value chosen
-and a lifecycle rule added to ensure data expires after the appropriate number of days.
+and a lifecycle rule added to ensure data expires after the appropriate number of days.  If setting to
+`forever-config-only`, no expiry will be set.
 
  | Tag Values | Expiration |
 |------------|------------|
@@ -48,6 +47,7 @@ and a lifecycle rule added to ensure data expires after the appropriate number o
 | 1-year     | 366 days   |
 | 7-years    | 2557 days  |
 | 10-years   | 3653 days  |
+| forever-config-only   | 0 days  |
 
 ### Encryption at rest, Key management service
 
@@ -64,13 +64,14 @@ the default "private")
 ## Tests
 
 ### How to use / run tests
+
 In order to integrate with AWS, we need to provide the relevant credentials.
 This is done through passing AWS environment variables to the docker container and then, depending on your AWS config set up,
 you will need to run the following command in order to pass the credentials through to terraform:
 
 AWS Vault
 
-```aws-vault exec <role> -- make test ```
+``` aws-vault exec <role> -- make test ```
 
 AWS Profile
 
