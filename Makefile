@@ -3,7 +3,6 @@ SHELL = /bin/bash
 .SHELLFLAGS = -euo pipefail -c
 DEV_DOCKER_ARGS = --volume "$(PWD):$(PWD):z" --workdir "$(PWD)" --interactive --rm
 CONDITIONAL_DOCKER_ARGS := $(if $(CI_MODE),,$(DEV_DOCKER_ARGS))
-TEST_ARGS ?=
 
 DOCKER = docker build \
     --file docker/Dockerfile \
@@ -25,7 +24,7 @@ fmt:
 	$(DOCKER) terraform fmt -recursive .
 
 test:
-	$(DOCKER) "cd test && go test $(TEST_ARGS)"
+	$(DOCKER) "cd test && go test --timeout 30m"
 
 fmt-check:
 	$(DOCKER) terraform fmt --recursive --check .

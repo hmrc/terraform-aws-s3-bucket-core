@@ -61,8 +61,11 @@ resource "aws_s3_bucket" "bucket" {
     id      = "Expiration days"
     enabled = true
 
-    expiration {
-      days = lookup(local.retention_periods, var.data_expiry)
+    dynamic "expiration" {
+      for_each = var.data_expiry == "forever-config-only" ? [] : [1]
+      content {
+        days = lookup(local.retention_periods, var.data_expiry)
+      }
     }
 
     noncurrent_version_expiration {
