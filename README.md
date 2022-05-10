@@ -39,7 +39,7 @@ One of the following data_expiry values must be chosen. The bucket tag `data_exp
 and a lifecycle rule added to ensure data expires after the appropriate number of days.  If setting to
 `forever-config-only`, no expiry will be set.
 
- | Tag Values          | Expiration |
+| Tag Values          | Expiration |
 |---------------------|------------|
 | 1-day               | 1 day      |
 | 1-week              | 7 days     |
@@ -47,7 +47,7 @@ and a lifecycle rule added to ensure data expires after the appropriate number o
 | 90-days             | 90 days    |
 | 6-months            | 183 days   |
 | 1-year              | 366 days   |
- | 18-months           | 549 days   |
+| 18-months           | 549 days   |
 | 7-years             | 2557 days  |
 | 10-years            | 3653 days  |
 | forever-config-only | 0 days     |
