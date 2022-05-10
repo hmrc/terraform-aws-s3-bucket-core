@@ -49,3 +49,9 @@ variable "kms_key_policy" {
   description = "The KMS key policy to attach when creating a KMS key"
   type        = string
 }
+
+variable "transition_to_glacier_days" {
+  description = "The number of days after object creation when the object will transition to Glacier storage; if 0, Glacier transition is disabled"
+  type        = number
+  default     = 0
+}

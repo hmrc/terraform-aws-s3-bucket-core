@@ -62,6 +62,14 @@ resource "aws_s3_bucket" "bucket" {
     id      = "Expiration days"
     enabled = true
 
+    dynamic "transition" {
+      for_each = var.transition_to_glacier_days == 0 ? [] : [1]
+      content {
+        days          = var.transition_to_glacier_days
+        storage_class = "GLACIER"
+      }
+    }
+
     dynamic "expiration" {
       for_each = var.data_expiry == "forever-config-only" ? [] : [1]
       content {
