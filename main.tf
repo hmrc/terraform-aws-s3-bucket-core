@@ -19,6 +19,7 @@ locals {
     "1-month" : 31
     "90-days" : 90
     "6-months" : 183
+    "18-months" : 549
     "1-year" : 366
     "7-years" : 2557
     "10-years" : 3653
@@ -60,6 +61,14 @@ resource "aws_s3_bucket" "bucket" {
   lifecycle_rule {
     id      = "Expiration days"
     enabled = true
+
+    dynamic "transition" {
+      for_each = var.transition_to_glacier_days == 0 ? [] : [1]
+      content {
+        days          = var.transition_to_glacier_days
+        storage_class = "GLACIER"
+      }
+    }
 
     dynamic "expiration" {
       for_each = var.data_expiry == "forever-config-only" ? [] : [1]
@@ -107,4 +116,3 @@ resource "aws_kms_alias" "bucket_kms_alias" {
 }
 
 data "aws_caller_identity" "current" {}
-

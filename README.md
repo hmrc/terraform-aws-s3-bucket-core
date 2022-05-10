@@ -31,23 +31,31 @@ the variable `versioning_enabled` which defaults to `true`.
 
 **Version expiration is enabled for non-current entries and is set to 90 days.**
 
-### Life cycle policies
+### Lifecycle policies
+
+#### Data Expiration
 
 One of the following data_expiry values must be chosen. The bucket tag `data_expiry` will be set to the value chosen
 and a lifecycle rule added to ensure data expires after the appropriate number of days.  If setting to
 `forever-config-only`, no expiry will be set.
 
- | Tag Values | Expiration |
-|------------|------------|
-| 1-day      | 1 day      |
-| 1-week     | 7 days     |
-| 1-month    | 31 days    |
-| 90-days    | 90 days    |
-| 6-months   | 183 days   |
-| 1-year     | 366 days   |
-| 7-years    | 2557 days  |
-| 10-years   | 3653 days  |
-| forever-config-only   | 0 days  |
+| Tag Values          | Expiration |
+|---------------------|------------|
+| 1-day               | 1 day      |
+| 1-week              | 7 days     |
+| 1-month             | 31 days    |
+| 90-days             | 90 days    |
+| 6-months            | 183 days   |
+| 1-year              | 366 days   |
+| 18-months           | 549 days   |
+| 7-years             | 2557 days  |
+| 10-years            | 3653 days  |
+| forever-config-only | 0 days     |
+
+#### Transition to Glacier
+
+To reduce costs of long-term storage of data in s3, set the `transition_to_glacier_days` variable to transition objects
+to glacier after the provided number of days.
 
 ### Encryption at rest, Key management service
 
