@@ -37,14 +37,13 @@ variable "log_bucket_id" {
 
 variable "data_expiry" {
   type        = string
-  description = "1-day, 1-week, 1-month, 90-days, 6-months, 1-year, 7-years, 10-years, forever-config-only"
+  description = "1-day, 1-week, 1-month, 90-days, 6-months, 1-year, 18-months, 7-years, 10-years or forever-config-only"
 
   validation {
-    condition     = var.data_expiry == "1-day" || var.data_expiry == "1-week" || var.data_expiry == "1-month" || var.data_expiry == "90-days" || var.data_expiry == "6-months" || var.data_expiry == "1-year" || var.data_expiry == "7-years" || var.data_expiry == "10-years" || var.data_expiry == "forever-config-only"
-    error_message = "The data_expiry value must be \"1-day\", \"1-week\", \"1-month\", \"90-days\", \"6-months\", \"1-year\", \"7-years\", \"10-years\" or \"forever-config-only\"."
+    condition     = var.data_expiry == "1-day" || var.data_expiry == "1-week" || var.data_expiry == "1-month" || var.data_expiry == "90-days" || var.data_expiry == "6-months" || var.data_expiry == "1-year" || var.data_expiry == "18-months" || var.data_expiry == "7-years" || var.data_expiry == "10-years" || var.data_expiry == "forever-config-only"
+    error_message = "The data_expiry value must be \"1-day\", \"1-week\", \"1-month\", \"90-days\", \"6-months\", \"1-year\", \"18  -months\", \"7-years\", \"10-years\" or \"forever-config-only\"."
   }
 }
-
 
 variable "kms_key_policy" {
   description = "The KMS key policy to attach when creating a KMS key"

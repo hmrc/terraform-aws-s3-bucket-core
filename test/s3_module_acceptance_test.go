@@ -33,6 +33,7 @@ func TestDataExpiryPeriods(t *testing.T) {
 		{dataExpiry: "90-days", expectedExpiryDays: 90},
 		{dataExpiry: "6-months", expectedExpiryDays: 183},
 		{dataExpiry: "1-year", expectedExpiryDays: 366},
+		{dataExpiry: "18-months", expectedExpiryDays: 549},
 		{dataExpiry: "7-years", expectedExpiryDays: 2557},
 		{dataExpiry: "10-years", expectedExpiryDays: 3653},
 	}
