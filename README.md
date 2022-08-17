@@ -59,8 +59,10 @@ to glacier after the provided number of days.
 
 ### Encryption at rest, Key management service
 
-The bucket will be encrypted with a KMS key created by this module, but the KMS policy must be supplied with the
-`kms_key_policy` variable (sting of JSON).
+The bucket will be encrypted with either the AWS default encryption or a KMS key created by this module.
+This is controlled by setting the 'use_default_encryption' variable.
+By default this var is set to 'False' and a KMS key is created. A KMS policy must be supplied with the
+`kms_key_policy` variable (sting of JSON). 
 
 **KMS key rotation is enabled.**
 

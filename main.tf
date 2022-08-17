@@ -40,8 +40,8 @@ resource "aws_s3_bucket" "bucket" {
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.bucket_kms_key.arn
-        sse_algorithm     = "aws:kms"
+        kms_master_key_id = var.use_default_encryption ? null : aws_kms_key.bucket_kms_key[0].arn
+        sse_algorithm     = var.use_default_encryption ? "AES256" : "aws:kms"
       }
     }
   }
@@ -105,14 +105,16 @@ resource "aws_s3_bucket_public_access_block" "public_blocked" {
 }
 
 resource "aws_kms_key" "bucket_kms_key" {
+  count               = var.use_default_encryption ? 0 : 1
   description         = "KMS key used to encrypt files for ${var.bucket_name}"
   enable_key_rotation = true
   policy              = var.kms_key_policy
 }
 
 resource "aws_kms_alias" "bucket_kms_alias" {
+  count         = var.use_default_encryption ? 0 : 1
   name          = "alias/s3-${var.bucket_name}"
-  target_key_id = aws_kms_key.bucket_kms_key.key_id
+  target_key_id = aws_kms_key.bucket_kms_key[0].key_id
 }
 
 data "aws_caller_identity" "current" {}

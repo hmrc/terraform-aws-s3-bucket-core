@@ -14,15 +14,15 @@ output "bucket_regional_domain_name" {
 
 output "kms_alias_arn" {
   description = "The ARN of the created KMS key alias"
-  value       = aws_kms_alias.bucket_kms_alias.arn
+  value       = var.use_default_encryption ? null : aws_kms_alias.bucket_kms_alias[0].arn
 }
 
 output "kms_key_arn" {
   description = "The ARN of the created KMS key"
-  value       = aws_kms_key.bucket_kms_key.arn
+  value       = var.use_default_encryption ? null : aws_kms_key.bucket_kms_key[0].arn
 }
 
 output "kms_key_id" {
   description = "The ID of the created KMS key"
-  value       = aws_kms_key.bucket_kms_key.id
+  value       = var.use_default_encryption ? null : aws_kms_key.bucket_kms_key[0].id
 }

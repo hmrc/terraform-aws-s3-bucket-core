@@ -55,3 +55,9 @@ variable "transition_to_glacier_days" {
   type        = number
   default     = 0
 }
+
+variable "use_default_encryption" {
+  description = "Specify whether to use default encryption or generate a customer managed KMS key"
+  type        = bool
+  default     = false
+}
