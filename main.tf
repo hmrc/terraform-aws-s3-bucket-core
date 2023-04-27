@@ -29,7 +29,6 @@ locals {
 
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
-  acl    = "private"
 
   versioning {
     enabled = var.versioning_enabled
@@ -89,6 +88,14 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_owner_enforced" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "bucket" {
   bucket = aws_s3_bucket.bucket.id
 
   rule {
