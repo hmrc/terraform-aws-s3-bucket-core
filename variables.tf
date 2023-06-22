@@ -61,3 +61,20 @@ variable "use_default_encryption" {
   type        = bool
   default     = false
 }
+
+variable "object_lock" {
+  description = "Specify whether to lock objects on the bucket to prevent modification"
+  type        = bool
+  default     = false
+}
+
+variable "object_lock_mode" {
+  type        = string
+  description = "COMPLIANCE or GOVERNANCE"
+  default     = "COMPLIANCE"
+
+  validation {
+    condition     = var.object_lock_mode == "COMPLIANCE" || var.object_lock_mode == "GOVERNANCE"
+    error_message = "The object_lock_mode must be \"COMPLIANCE\" or \"GOVERNANCE\"."
+  }
+}

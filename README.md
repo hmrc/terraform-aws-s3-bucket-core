@@ -71,6 +71,10 @@ By default this var is set to 'False' and a KMS key is created. A KMS policy mus
 Bucket ownership controls are set to `BucketOwnerEnforced` which means that bucket ACLs have no effect (equivalent to
 the default "private")
 
+### Object Lock
+
+**Turned off by default.** In order to turn it on set the `object_lock` variable to true
+
 ## Tests
 
 ### How to use / run tests

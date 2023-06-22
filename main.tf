@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.68" # object_ownership = "BucketOwnerEnforced" supported 1st here
+      version = ">= 5.4" # object_ownership = "BucketOwnerEnforced" supported 1st here
     }
   }
 }
@@ -28,8 +28,9 @@ locals {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.bucket_name
-  acl    = "private"
+  bucket              = var.bucket_name
+  acl                 = "private"
+  object_lock_enabled = var.object_lock
 
   versioning {
     enabled = var.versioning_enabled
@@ -115,6 +116,18 @@ resource "aws_kms_alias" "bucket_kms_alias" {
   count         = var.use_default_encryption ? 0 : 1
   name          = "alias/s3-${var.bucket_name}"
   target_key_id = aws_kms_key.bucket_kms_key[0].key_id
+}
+
+resource "aws_s3_bucket_object_lock_configuration" "object_lock" {
+  count  = var.object_lock && var.versioning_enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    default_retention {
+      mode = var.object_lock_mode
+      days = var.data_expiry
+    }
+  }
 }
 
 data "aws_caller_identity" "current" {}
