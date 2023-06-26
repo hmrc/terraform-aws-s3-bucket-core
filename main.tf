@@ -125,7 +125,7 @@ resource "aws_s3_bucket_object_lock_configuration" "object_lock" {
   rule {
     default_retention {
       mode = var.object_lock_mode
-      days = lookup(local.retention_periods, var.data_expiry)
+      days = var.data_expiry == "forever-config-only" ? "1000" : lookup(local.retention_periods, var.data_expiry)
     }
   }
 }
