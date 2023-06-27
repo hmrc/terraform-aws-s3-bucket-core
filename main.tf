@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.4" # object_ownership = "BucketOwnerEnforced" supported 1st here
+      version = ">= 5.4"
     }
   }
 }
