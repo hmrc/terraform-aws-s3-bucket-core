@@ -27,6 +27,7 @@ module "bucket" {
   kms_key_policy   = ""
   depends_on       = [aws_s3_bucket_public_access_block.access_logs, aws_s3_bucket_policy.access_logs]
   object_lock      = true
+  object_lock_mode = "GOVERNANCE"
 }
 
 data "aws_iam_policy_document" "bucket_kms_key" {
