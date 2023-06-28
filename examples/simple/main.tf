@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.68.0"
+      version = "5.4.0"
     }
   }
 }
@@ -26,6 +26,8 @@ module "bucket" {
   data_expiry      = var.data_expiry
   kms_key_policy   = ""
   depends_on       = [aws_s3_bucket_public_access_block.access_logs, aws_s3_bucket_policy.access_logs]
+  object_lock      = true
+  object_lock_mode = "GOVERNANCE"
 }
 
 data "aws_iam_policy_document" "bucket_kms_key" {

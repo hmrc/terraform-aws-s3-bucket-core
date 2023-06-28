@@ -71,6 +71,17 @@ By default this var is set to 'False' and a KMS key is created. A KMS policy mus
 Bucket ownership controls are set to `BucketOwnerEnforced` which means that bucket ACLs have no effect (equivalent to
 the default "private")
 
+### Object Lock
+
+**Turned off by default.** In order to turn it on set the `object_lock` variable to true, which then has the option of 
+either using the `COMPLIANCE` or `GOVERNANCE` mode via the `object_lock_mode` variable. If the `object_lock_mode` is not 
+set, it will use `COMPLIANCE` mode by default, which is stricter.
+
+Once Object Lock is enabled, the objects will be locked by the same amount of time set by the `data_expiry` parameter for 
+the bucket. However, **Please Note:** that the maximum length of time allowed for object lock is set as `1000` day as   
+allowed by AWS. Therefore, when `data_expiry` is set to `forever-config-only` the lock is not forever, but for the 
+maximum allowed of `1000` days.
+
 ## Tests
 
 ### How to use / run tests
