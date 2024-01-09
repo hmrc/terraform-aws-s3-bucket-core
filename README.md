@@ -68,8 +68,9 @@ By default this var is set to 'False' and a KMS key is created. A KMS policy mus
 
 ### Access control list (ACL)
 
-Bucket ownership controls are set to `BucketOwnerEnforced` which means that bucket ACLs have no effect (equivalent to
-the default "private")
+Bucket ownership controls are set to `BucketOwnerEnforced` by default, which means that bucket ACLs have no effect (equivalent to
+the default "private"). This can be overridden if necessary to facilitate certain behaviours, such as allowing CloudFront to deliver standard logs to the bucket,
+but the default should be used whenever possible as it offers the best security position.
 
 ### Object Lock
 

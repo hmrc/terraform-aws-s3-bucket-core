@@ -93,7 +93,7 @@ resource "aws_s3_bucket_ownership_controls" "bucket_owner_enforced" {
   bucket = aws_s3_bucket.bucket.id
 
   rule {
-    object_ownership = "BucketOwnerEnforced"
+    object_ownership = var.bucket_object_ownership
   }
 }
 
