@@ -110,6 +110,8 @@ resource "aws_kms_key" "bucket_kms_key" {
   description         = "KMS key used to encrypt files for ${var.bucket_name}"
   enable_key_rotation = true
   policy              = var.kms_key_policy
+
+  tags = var.tags
 }
 
 resource "aws_kms_alias" "bucket_kms_alias" {
