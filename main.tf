@@ -29,40 +29,30 @@ locals {
 
 resource "aws_s3_bucket" "bucket" {
   bucket              = var.bucket_name
-  acl                 = "private"
   object_lock_enabled = var.object_lock
 
-  versioning {
-    enabled = var.versioning_enabled
-  }
-
   force_destroy = var.force_destroy
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = var.use_default_encryption ? null : aws_kms_key.bucket_kms_key[0].arn
-        sse_algorithm     = var.use_default_encryption ? "AES256" : "aws:kms"
-      }
-    }
-  }
 
   tags = merge({
     Name             = var.bucket_name
     data_sensitivity = var.data_sensitivity
     data_expiry      = var.data_expiry
   }, var.tags)
+}
 
-  lifecycle_rule {
-    id                                     = "AbortIncompleteMultipartUpload"
-    enabled                                = true
-    abort_incomplete_multipart_upload_days = 7
-  }
+resource "aws_s3_bucket_logging" "bucket_logging" {
+  bucket = aws_s3_bucket.bucket.id
 
-  lifecycle_rule {
-    id      = "Expiration days"
-    enabled = true
+  target_bucket = var.log_bucket_id
+  target_prefix = "${data.aws_caller_identity.current.account_id}/${var.bucket_name}/"
+}
 
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_configuration" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    id     = "Expiration days"
+    status = "Enabled"
     dynamic "transition" {
       for_each = var.transition_to_glacier_days == 0 ? [] : [1]
       content {
@@ -77,15 +67,42 @@ resource "aws_s3_bucket" "bucket" {
         days = lookup(local.retention_periods, var.data_expiry)
       }
     }
-
     noncurrent_version_expiration {
-      days = local.noncurrent_version_expiration_in_days
+      noncurrent_days = local.noncurrent_version_expiration_in_days
     }
   }
 
-  logging {
-    target_bucket = var.log_bucket_id
-    target_prefix = "${data.aws_caller_identity.current.account_id}/${var.bucket_name}/"
+  rule {
+    id     = "AbortIncompleteMultipartUpload"
+    status = "Enabled"
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl_private" {
+  depends_on = [aws_s3_bucket_ownership_controls.bucket_owner_enforced]
+  count = var.bucket_object_ownership != "BucketOwnerEnforced" ? 1 : 0
+  bucket = aws_s3_bucket.bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "bucket_versioning" {
+  bucket = aws_s3_bucket.bucket.id
+  versioning_configuration {
+    status = var.versioning_enabled != "true" ? "Disabled": "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_server_side_encryption" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.use_default_encryption ? null : aws_kms_key.bucket_kms_key[0].arn
+      sse_algorithm     = var.use_default_encryption ? "AES256" : "aws:kms"
+    }
   }
 }
 
