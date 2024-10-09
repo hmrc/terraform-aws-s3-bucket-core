@@ -82,6 +82,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_configuration
 }
 
 resource "aws_s3_bucket_acl" "bucket_acl_private" {
+  depends_on = [aws_s3_bucket_ownership_controls.bucket_owner_enforced]
+
   bucket = aws_s3_bucket.bucket.id
   acl    = "private"
 }

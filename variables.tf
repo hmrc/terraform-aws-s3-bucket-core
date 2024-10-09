@@ -6,7 +6,7 @@ variable "bucket_name" {
 variable "bucket_object_ownership" {
   type        = string
   description = "The setting used to define ownership of bucket objects. Defaults to 'BucketOwnerEnforced', which is the recommended setting. Can be changed in situations where less secure settings are required e.g. to allow CloudFront to deliver standard logs to the bucket, which requires 'BucketOwnerPreferred'."
-  default     = "BucketOwnerEnforced"
+  default     = "BucketOwnerPreferred"
 }
 
 variable "versioning_enabled" {
