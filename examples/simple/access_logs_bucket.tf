@@ -5,49 +5,59 @@ locals {
 resource "aws_s3_bucket" "access_logs" {
   bucket = local.log_bucket_name
 
-  versioning {
-    enabled = false
-  }
-
   force_destroy = true
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = ""
-        sse_algorithm     = "AES256"
-      }
-    }
-  }
 
   tags = {
     Name             = local.log_bucket_name
     data_sensitivity = "high"
     data_expiry      = "7-days"
   }
+}
 
-  lifecycle_rule {
-    id                                     = "AbortIncompleteMultipartUpload"
-    enabled                                = true
-    abort_incomplete_multipart_upload_days = 1
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+
+  rule {
+    id     = "AbortIncompleteMultipartUpload"
+    status = "Enabled"
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
+    }
   }
 
-  lifecycle_rule {
-    id      = "Expiration days"
-    enabled = true
+  rule {
+    id     = "Expiration days"
+    status = "Enabled"
 
     expiration {
       days = 7
     }
 
     noncurrent_version_expiration {
-      days = 90
+      noncurrent_days = 90
     }
   }
-
 }
 
-resource "aws_s3_bucket_ownership_controls" "example" {
+resource "aws_s3_bucket_versioning" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = ""
+      sse_algorithm     = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "access_logs" {
   bucket = aws_s3_bucket.access_logs.id
 
   rule {

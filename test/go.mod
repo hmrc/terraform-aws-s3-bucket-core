@@ -1,4 +1,4 @@
-module github.com/hmrc/terraform-aws-s3-bucket-standard/test
+module github.com/hmrc/terraform-aws-s3-bucket-core/test
 
 go 1.16 //go.mod file indicates go 1.16, but maximum "supported" version in terratest is 1.14 https://github.com/gruntwork-io/terratest/pull/1036
 
