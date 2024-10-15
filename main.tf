@@ -83,15 +83,15 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_configuration
 
 resource "aws_s3_bucket_acl" "bucket_acl_private" {
   depends_on = [aws_s3_bucket_ownership_controls.bucket_owner_enforced]
-  count = var.bucket_object_ownership != "BucketOwnerEnforced" ? 1 : 0
-  bucket = aws_s3_bucket.bucket.id
-  acl    = "private"
+  count      = var.bucket_object_ownership != "BucketOwnerEnforced" ? 1 : 0
+  bucket     = aws_s3_bucket.bucket.id
+  acl        = "private"
 }
 
 resource "aws_s3_bucket_versioning" "bucket_versioning" {
   bucket = aws_s3_bucket.bucket.id
   versioning_configuration {
-    status = var.versioning_enabled != "true" ? "Disabled": "Enabled"
+    status = var.versioning_enabled != "true" ? "Disabled" : "Enabled"
   }
 }
 
