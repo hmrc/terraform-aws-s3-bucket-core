@@ -56,6 +56,16 @@ variable "kms_key_policy" {
   type        = string
 }
 
+variable "kms_rotation_period_in_days" {
+  type        = number
+  description = "Custom KMS rotation interval; must be between 90 and 2560 days"
+  default     = 90
+  validation {
+    condition     = var.kms_rotation_period_in_days >= 90 && var.kms_rotation_period_in_days <= 2560
+    error_message = "KMS rotation period in days must be between 90 and 2560 (inclusive)."
+  }
+}
+
 variable "transition_to_glacier_days" {
   description = "The number of days after object creation when the object will transition to Glacier storage; if 0, Glacier transition is disabled"
   type        = number

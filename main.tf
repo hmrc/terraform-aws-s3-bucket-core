@@ -1,10 +1,10 @@
 terraform {
-  required_version = ">= 0.13.7"
+  required_version = ">= 1.0"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.9"
+      version = ">= 5.49"
     }
   }
 }
@@ -123,10 +123,11 @@ resource "aws_s3_bucket_public_access_block" "public_blocked" {
 }
 
 resource "aws_kms_key" "bucket_kms_key" {
-  count               = var.use_default_encryption ? 0 : 1
-  description         = "KMS key used to encrypt files for ${var.bucket_name}"
-  enable_key_rotation = true
-  policy              = var.kms_key_policy
+  count                   = var.use_default_encryption ? 0 : 1
+  description             = "KMS key used to encrypt files for ${var.bucket_name}"
+  enable_key_rotation     = true
+  rotation_period_in_days = var.kms_rotation_period_in_days
+  policy                  = var.kms_key_policy
 
   tags = var.tags
 }
