@@ -30,5 +30,5 @@ fmt-check:
 	$(DOCKER) terraform fmt --recursive --check .
 
 validate:
-	$(DOCKER) "terraform init -backend=false -reconfigure -input=false examples/simple && terraform validate examples/simple"
+	$(DOCKER) "terraform -chdir=examples/simple init -backend=false -reconfigure -input=false && terraform -chdir=examples/simple validate"
 

@@ -64,7 +64,8 @@ This is controlled by setting the `use_default_encryption` variable.
 By default this var is set to 'False' and a KMS key is created. A KMS policy must be supplied with the
 `kms_key_policy` variable (sting of JSON). 
 
-**KMS key rotation is enabled.**
+**KMS key rotation is enabled and set to rotate every 90 days.** 
+This can be changed with the `kms_rotation_period_in_days` variable and can be set to between 90 and 2560.
 
 ### Access control list (ACL)
 
