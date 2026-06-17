@@ -94,3 +94,15 @@ variable "object_lock_mode" {
     error_message = "The object_lock_mode must be \"COMPLIANCE\" or \"GOVERNANCE\"."
   }
 }
+
+variable "bucket_key_enabled" {
+  type        = bool
+  description = "Specify whether to enable bucket key for server-side encryption."
+  default     = false
+}
+
+variable "blocked_encryption_types" {
+  type        = list(string)
+  description = "Specify the encryption types to block for server-side encryption. SSE-C is blocked by default."
+  default     = ["SSE-C"]
+}
