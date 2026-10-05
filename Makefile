@@ -23,9 +23,6 @@ DOCKER = docker build \
 fmt:
 	$(DOCKER) terraform fmt -recursive .
 
-test:
-	$(DOCKER) "cd test && go test --parallel 5 --timeout 30m"
-
 fmt-check:
 	$(DOCKER) terraform fmt --recursive --check .
 

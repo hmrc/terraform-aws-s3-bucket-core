@@ -83,19 +83,3 @@ Once Object Lock is enabled, the objects will be locked by the same amount of ti
 the bucket. However, **Please Note:** that the maximum length of time allowed for object lock is set as `1000` day as   
 allowed by AWS. Therefore, when `data_expiry` is set to `forever-config-only` the lock is not forever, but for the 
 maximum allowed of `1000` days.
-
-## Tests
-
-### How to use / run tests
-
-In order to integrate with AWS, we need to provide the relevant credentials.
-This is done through passing AWS environment variables to the docker container and then, depending on your AWS config set up,
-you will need to run the following command in order to pass the credentials through to terraform:
-
-AWS Vault
-
-``` aws-vault exec <role> -- make test ```
-
-AWS Profile
-
-``` aws-profile -p <role> make test ```
