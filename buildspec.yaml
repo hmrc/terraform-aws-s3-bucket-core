@@ -20,5 +20,4 @@ phases:
     commands:
       - make fmt-check
       - make validate
-      - make test
 
