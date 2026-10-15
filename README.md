@@ -37,7 +37,7 @@ the variable `versioning_enabled` which defaults to `true`.
 
 One of the following data_expiry values must be chosen. The bucket tag `data_expiry` will be set to the value chosen
 and a lifecycle rule added to ensure data expires after the appropriate number of days.  If setting to
-`forever-config-only`, no expiry will be set.
+`forever-config-only`, no current-object expiry will be set; noncurrent versions still expire after 90 days.
 
 | Tag Values          | Expiration |
 |---------------------|------------|
@@ -52,10 +52,52 @@ and a lifecycle rule added to ensure data expires after the appropriate number o
 | 10-years            | 3653 days  |
 | forever-config-only | 0 days     |
 
-#### Transition to Glacier
+#### Storage class transitions
 
-To reduce costs of long-term storage of data in s3, set the `transition_to_glacier_days` variable to transition objects
-to glacier after the provided number of days.
+Transitions are optional and apply to current objects only. All transition inputs default to `0` (disabled), so existing
+callers retain their current behaviour, including any configured `transition_to_glacier_days` value. `STANDARD` is the
+default storage class, not a lifecycle transition destination.
+
+| Input | Destination | Default | Illustrative enabled value (days) |
+|-------|-------------|---------|-----------------------------------|
+| `transition_to_standard_ia_days` | `STANDARD_IA` | `0` | `30` |
+| `transition_to_onezone_ia_days` | `ONEZONE_IA` | `0` | `30`, only for reproducible data |
+| `transition_to_intelligent_tiering_days` | `INTELLIGENT_TIERING` | `0` | `30` |
+| `transition_to_glacier_ir_days` | `GLACIER_IR` | `0` | `30` |
+| `transition_to_glacier_days` (existing) | `GLACIER` | `0` | `90` |
+| `transition_to_deep_archive_days` | `DEEP_ARCHIVE` | `0` | `180` |
+
+Values are days **after object creation**, not days since the preceding transition. New inputs must be non-null,
+non-negative whole numbers. Enabled `STANDARD_IA` and `ONEZONE_IA` transitions require at least 30 days; other new
+destinations allow any positive whole number. Since `0` disables a transition, this interface cannot request a day-zero
+transition. The illustrative values above are policy choices, not automatically enabled defaults or universal recommendations.
+
+For example, add these arguments to a module call for a staged archive policy:
+
+```hcl
+data_expiry                    = "1-year"
+transition_to_standard_ia_days  = 30
+transition_to_glacier_days      = 90
+transition_to_deep_archive_days = 180
+```
+
+For a direct transition, set only the desired input, such as `transition_to_standard_ia_days = 30` or
+`transition_to_deep_archive_days = 180`, and choose an appropriate `data_expiry` (still a required input).
+
+S3 restricts transition combinations and minimum time in a storage class. This module validates individual new inputs;
+it does not validate cross-input schedules or their interaction with expiration. Unsupported schedules are rejected by
+the provider or S3. Follow the [S3 transition constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html).
+
+Consider retrieval latency, retrieval/transition charges and minimum billable storage durations before enabling a policy:
+30 days for `STANDARD_IA`/`ONEZONE_IA`, 90 days for `GLACIER_IR`/`GLACIER`, and 180 days for `DEEP_ARCHIVE`.
+For example, transitioning to `DEEP_ARCHIVE` at day 180 and expiring at day 200 incurs early-deletion charges.
+`ONEZONE_IA` stores data in a single Availability Zone and is appropriate only when the data can be recreated.
+
+By default, S3 does not transition objects smaller than 128 KB. Updating an older lifecycle configuration can adopt this
+newer default, so review small-object behaviour before upgrading. See the [AWS transition documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/API_Transition.html).
+
+Transitions do not change the configured current-object expiration, 90-day noncurrent-version expiration,
+seven-day incomplete-multipart-upload cleanup, encryption or Object Lock settings.
 
 ### Encryption at rest, Key management service
 

@@ -54,10 +54,19 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_configuration
     id     = "Expiration days"
     status = "Enabled"
     dynamic "transition" {
-      for_each = var.transition_to_glacier_days == 0 ? [] : [1]
+      for_each = {
+        for storage_class, days in {
+          GLACIER             = var.transition_to_glacier_days
+          STANDARD_IA         = var.transition_to_standard_ia_days
+          ONEZONE_IA          = var.transition_to_onezone_ia_days
+          INTELLIGENT_TIERING = var.transition_to_intelligent_tiering_days
+          GLACIER_IR          = var.transition_to_glacier_ir_days
+          DEEP_ARCHIVE        = var.transition_to_deep_archive_days
+        } : storage_class => days if days != 0
+      }
       content {
-        days          = var.transition_to_glacier_days
-        storage_class = "GLACIER"
+        days          = transition.value
+        storage_class = transition.key
       }
     }
 
