@@ -72,6 +72,76 @@ variable "transition_to_glacier_days" {
   default     = 0
 }
 
+variable "transition_to_standard_ia_days" {
+  description = "Days after object creation to transition to STANDARD_IA; 0 disables the transition"
+  type        = number
+  default     = 0
+
+  validation {
+    condition = var.transition_to_standard_ia_days == null ? false : (
+      floor(var.transition_to_standard_ia_days) == var.transition_to_standard_ia_days &&
+      (var.transition_to_standard_ia_days == 0 || var.transition_to_standard_ia_days >= 30)
+    )
+    error_message = "The transition_to_standard_ia_days value must be 0 (disabled) or a whole number of at least 30 days."
+  }
+}
+
+variable "transition_to_onezone_ia_days" {
+  description = "Days after object creation to transition to ONEZONE_IA; 0 disables the transition"
+  type        = number
+  default     = 0
+
+  validation {
+    condition = var.transition_to_onezone_ia_days == null ? false : (
+      floor(var.transition_to_onezone_ia_days) == var.transition_to_onezone_ia_days &&
+      (var.transition_to_onezone_ia_days == 0 || var.transition_to_onezone_ia_days >= 30)
+    )
+    error_message = "The transition_to_onezone_ia_days value must be 0 (disabled) or a whole number of at least 30 days."
+  }
+}
+
+variable "transition_to_intelligent_tiering_days" {
+  description = "Days after object creation to transition to INTELLIGENT_TIERING; 0 disables the transition"
+  type        = number
+  default     = 0
+
+  validation {
+    condition = var.transition_to_intelligent_tiering_days == null ? false : (
+      var.transition_to_intelligent_tiering_days >= 0 &&
+      floor(var.transition_to_intelligent_tiering_days) == var.transition_to_intelligent_tiering_days
+    )
+    error_message = "The transition_to_intelligent_tiering_days value must be a non-negative whole number; 0 disables the transition."
+  }
+}
+
+variable "transition_to_glacier_ir_days" {
+  description = "Days after object creation to transition to GLACIER_IR; 0 disables the transition"
+  type        = number
+  default     = 0
+
+  validation {
+    condition = var.transition_to_glacier_ir_days == null ? false : (
+      var.transition_to_glacier_ir_days >= 0 &&
+      floor(var.transition_to_glacier_ir_days) == var.transition_to_glacier_ir_days
+    )
+    error_message = "The transition_to_glacier_ir_days value must be a non-negative whole number; 0 disables the transition."
+  }
+}
+
+variable "transition_to_deep_archive_days" {
+  description = "Days after object creation to transition to DEEP_ARCHIVE; 0 disables the transition"
+  type        = number
+  default     = 0
+
+  validation {
+    condition = var.transition_to_deep_archive_days == null ? false : (
+      var.transition_to_deep_archive_days >= 0 &&
+      floor(var.transition_to_deep_archive_days) == var.transition_to_deep_archive_days
+    )
+    error_message = "The transition_to_deep_archive_days value must be a non-negative whole number; 0 disables the transition."
+  }
+}
+
 variable "use_default_encryption" {
   description = "Specify whether to use default encryption or generate a customer managed KMS key"
   type        = bool
