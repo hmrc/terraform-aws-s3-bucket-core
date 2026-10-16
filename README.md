@@ -72,29 +72,6 @@ non-negative whole numbers. Enabled `STANDARD_IA` and `ONEZONE_IA` transitions r
 destinations allow any positive whole number. Since `0` disables a transition, this interface cannot request a day-zero
 transition. The illustrative values above are policy choices, not automatically enabled defaults or universal recommendations.
 
-For example, use the module directly with a staged archive policy:
-
-```hcl
-module "archive_bucket" {
-  # Evaluation only; pin the published release tag after release.
-  source = "git::https://github.com/hmrc/terraform-aws-s3-bucket-core.git?ref=PSEC-2379"
-
-  bucket_name      = "my-team-archive-bucket"
-  data_sensitivity = "low"
-  data_expiry      = "1-year"
-
-  log_bucket_id  = var.log_bucket_id
-  kms_key_policy = var.kms_key_policy
-
-  transition_to_standard_ia_days  = 30
-  transition_to_glacier_days      = 90
-  transition_to_deep_archive_days = 180
-}
-```
-
-The caller supplies an existing access-log bucket and a valid KMS key policy through `var.log_bucket_id` and
-`var.kms_key_policy`. Omitted transition inputs default to `0` (disabled).
-
 For a direct transition, set only the desired input, such as `transition_to_standard_ia_days = 30` or
 `transition_to_deep_archive_days = 180`, and choose an appropriate `data_expiry` (still a required input).
 
